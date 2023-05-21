@@ -1,0 +1,34 @@
+//npx prisma init --datasource-provider SQLite //GERA O TIPO DE PRISMA DO BANCO
+//npx prisma migrate dev //CRIA UMA MIGRATE
+//npx prisma studio //ABRE O AMBIENTE INTEGRADO NO NAVEGADOR PARA VER O BANCO DE DADOS
+//npx prisma migrate reset //RESETA AS MIGRATES
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String @id @default(uuid())
+  githubId  Int    @unique
+  name      String
+  login     String
+  avatarUrl String
+
+  memories Memory[]
+}
+
+model Memory {
+  id     String @id @default(uuid())
+  userId String
+
+  coverUrl  String
+  content   String
+  isPublic  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
